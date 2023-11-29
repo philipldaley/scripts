@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Function to print welcome message
+
+print_welcome_message() {
+	echo "Hello user inquring into IP Address $ip_address"
+}
+
+# Function to get the service status
+
+get_service_status() {
+	ssh pdaley@$ip_address "service --status-all"
+	read -p "Enter the service name: " service_id
+	ssh pdaley@$ip_address "service $service_id status | grep Active:"
+}
+
+# Function to get disk percentage of the root filesystem on the remote host
+get_disk_percentage() {
+	ssh pdaley@$ip_address "df | egrep '/$' | awk '{print \$5}'"
+}
+
+# Functionto get the hostname of the remote machine
+get_hostname() {
+	ssh pdaley@$ip_address "hostname"
+}
+# Loop to keep presenting the menu
+# while true; do
+
+read -p "What IP address do you want to check?" ip_address
+
+# Display menu options
+echo "Please select from the options below"
+echo "1. Print Welcome Message"
+echo  "2. Get Status of a service"
+echo  "3. Get Disk Percentage"
+echo  "4. Get Hostname"
+echo  "5. Exit"
+
+# Read Users Choice
+read -p "Enter your choice (1-5): " choice
+
+# Execute user's choice
+case $choice in
+	1)
+		print_welcome_message
+		;;
+	2)
+		get_service_status
+		;;
+	3)
+		get_disk_percentage
+		;;
+	4)
+		get_hostname
+		;;
+	5)
+		exit # Exit the loop
+		;;
+	*)
+		echo "Invalid choice.  Please enter number between (1-4)"
+		;;
+    esac
+#done
